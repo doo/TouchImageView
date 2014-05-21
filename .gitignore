@@ -35,3 +35,5 @@ gen-external-apklibs/
 #Gradle generated files
 build/
 .gradle
+
+.DS_Store
