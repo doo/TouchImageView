@@ -34,11 +34,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
-public class TouchImageView extends ImageView {
+public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
 
     private static final String DEBUG = "DEBUG";
 
@@ -279,13 +278,14 @@ public class TouchImageView extends ImageView {
         super.onRestoreInstanceState(state);
     }
 
-    @Override
     protected void onDraw(Canvas canvas) {
-        onDrawReady = true;
-        imageRenderedAtLeastOnce = true;
-        if (delayedZoomVariables != null) {
-            setZoom(delayedZoomVariables.scale, delayedZoomVariables.focusX, delayedZoomVariables.focusY, delayedZoomVariables.scaleType);
-            delayedZoomVariables = null;
+        if(getDrawable() != null){
+            onDrawReady = true;
+            imageRenderedAtLeastOnce = true;
+            if (delayedZoomVariables != null) {
+                setZoom(delayedZoomVariables.scale, delayedZoomVariables.focusX, delayedZoomVariables.focusY, delayedZoomVariables.scaleType);
+                delayedZoomVariables = null;
+            }
         }
         super.onDraw(canvas);
     }
@@ -414,7 +414,7 @@ public class TouchImageView extends ImageView {
      * Set zoom parameters equal to another TouchImageView. Including scale, position,
      * and ScaleType.
      *
-     * @param TouchImageView
+     * @param img
      */
     public void setZoom(TouchImageView img) {
         PointF center = img.getScrollPosition();
@@ -554,13 +554,17 @@ public class TouchImageView extends ImageView {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        viewWidth = setViewSize(widthMode, widthSize, drawableWidth);
-        viewHeight = setViewSize(heightMode, heightSize, drawableHeight);
+        int totalViewWidth = setViewSize(widthMode, widthSize, drawableWidth);
+        int totalViewHeight = setViewSize(heightMode, heightSize, drawableHeight);
+
+        // Image view width, height must consider padding
+        viewWidth = totalViewWidth - getPaddingLeft() - getPaddingRight();
+        viewHeight = totalViewHeight - getPaddingTop() - getPaddingBottom();
 
         //
         // Set view dimensions
         //
-        setMeasuredDimension(viewWidth, viewHeight);
+        setMeasuredDimension(totalViewWidth, totalViewHeight);   
 
         //
         // Fit content within view
