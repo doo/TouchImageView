@@ -564,7 +564,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         //
         // Set view dimensions
         //
-        setMeasuredDimension(totalViewWidth, totalViewHeight);   
+        setMeasuredDimension(viewWidth, viewHeight);   
 
         //
         // Fit content within view
